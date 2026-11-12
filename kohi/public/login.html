@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión — Kōhi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main>
+    <a class="brand small" href="/">Kōhi</a>
+    <h2>Iniciar sesión</h2>
+    <p class="lead">Consulta tu lugar en la lista.</p>
+    <form id="form" novalidate>
+      <label>Email <input type="email" name="email" autocomplete="email" required></label>
+      <label>Password <input type="password" name="password" autocomplete="current-password" required></label>
+      <p id="msg" class="msg" role="alert"></p>
+      <button class="btn primary block" type="submit">Entrar</button>
+    </form>
+    <p class="alt">¿Aún no estás en la lista? <a href="/register.html">Únete</a></p>
+  </main>
+
+  <script>
+    if (localStorage.getItem('kohi_token')) location.replace('/dashboard.html');
+
+    const form = document.getElementById('form');
+    const msg = document.getElementById('msg');
+    const btn = form.querySelector('button');
+    function show(text, type) { msg.textContent = text; msg.className = 'msg ' + type; }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { email, password } = Object.fromEntries(new FormData(form));
+      if (!email.trim() || !password) return show('Ingresa email y password.', 'error');
+
+      btn.disabled = true;
+      show('Verificando…', 'ok');
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          return show(res.status === 401 ? 'Email o password incorrectos.' : (data.error || 'Error inesperado.'), 'error');
+        }
+        localStorage.setItem('kohi_token', data.token);
+        location.href = '/dashboard.html';
+      } catch {
+        show('No se pudo conectar con el servidor.', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

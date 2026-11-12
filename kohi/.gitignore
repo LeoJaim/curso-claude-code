@@ -1,0 +1,4 @@
+node_modules/
+kohi.db
+kohi.db-*
+.playwright-mcp/

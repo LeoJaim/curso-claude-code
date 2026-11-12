@@ -1,0 +1,19 @@
+{
+  "name": "proyecto_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.1.1",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
