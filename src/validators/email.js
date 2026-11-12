@@ -1,9 +1,12 @@
 // Validador de email (código de ejemplo para la prueba)
-// BUG: la regex solo exige "algo@algo.algo", por eso acepta "usuario@.com"
-const EMAIL_REGEX = /^\S+@\S*\.\S+$/;
+// Local part: cualquier cosa sin espacios ni "@".
+// Dominio: uno o más labels alfanuméricos (guiones solo en el medio)
+// separados por punto, terminando en un TLD de 2+ letras.
+const EMAIL_REGEX =
+  /^[^\s@]+@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/;
 
 function validateEmail(email) {
-  return EMAIL_REGEX.test(email);
+  return typeof email === 'string' && EMAIL_REGEX.test(email);
 }
 
 module.exports = { validateEmail };
