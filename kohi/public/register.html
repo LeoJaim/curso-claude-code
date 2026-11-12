@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unirme a la lista — Kōhi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main>
+    <a class="brand small" href="/">Kōhi</a>
+
+    <section id="form-view">
+      <h2>Unirme a la lista</h2>
+      <p class="lead">Reserva tu lugar antes de la apertura.</p>
+      <form id="form" novalidate>
+        <label>Nombre <input type="text" name="name" autocomplete="name" required></label>
+        <label>Email <input type="email" name="email" autocomplete="email" required></label>
+        <label>Password <input type="password" name="password" autocomplete="new-password" minlength="6" required></label>
+        <label>Confirmar password <input type="password" name="confirm" autocomplete="new-password" required></label>
+        <p id="msg" class="msg" role="alert"></p>
+        <button class="btn primary block" type="submit">Registrarme</button>
+      </form>
+      <p class="alt">¿Ya tienes cuenta? <a href="/login.html">Inicia sesión</a></p>
+    </section>
+
+    <section id="success-view" class="success hidden">
+      <h2>¡Estás en la lista!</h2>
+      <p class="num">Tu posición: <strong id="pos" style="color:var(--gold)"></strong></p>
+      <hr class="rule">
+      <a class="btn" href="/login.html">Ir a mi panel</a>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('form');
+    const msg = document.getElementById('msg');
+    const btn = form.querySelector('button');
+
+    function show(text, type) { msg.textContent = text; msg.className = 'msg ' + type; }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const { name, email, password, confirm } = Object.fromEntries(new FormData(form));
+
+      if (!name.trim() || !email.trim() || !password || !confirm) return show('Completa todos los campos.', 'error');
+      if (password.length < 6) return show('El password debe tener al menos 6 caracteres.', 'error');
+      if (password !== confirm) return show('Los passwords no coinciden.', 'error');
+
+      btn.disabled = true;
+      show('Registrando…', 'ok');
+      try {
+        const res = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const text = res.status === 409 ? 'Ese email ya está registrado. ¿Quieres iniciar sesión?' : (data.error || 'Error inesperado.');
+          return show(text, 'error');
+        }
+        document.getElementById('pos').textContent = '#' + data.position;
+        document.getElementById('form-view').classList.add('hidden');
+        document.getElementById('success-view').classList.remove('hidden');
+      } catch {
+        show('No se pudo conectar con el servidor.', 'error');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

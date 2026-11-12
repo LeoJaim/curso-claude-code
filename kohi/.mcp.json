@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_TOKEN}"
+      }
+    },
+    "sqlite": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["--with", "mcp<2", "mcp-server-sqlite", "--db-path", "./kohi.db"],
+      "env": {}
+    }
+  }
+}

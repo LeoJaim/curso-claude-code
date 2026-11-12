@@ -1,0 +1,128 @@
+:root {
+  --bg: #0b0a09;
+  --surface: #141210;
+  --line: #2a2622;
+  --text: #ece6dc;
+  --muted: #8f877b;
+  --gold: #d4a24c;
+  --gold-soft: rgba(212, 162, 76, 0.15);
+  --error: #e07a6a;
+  --ok: #9fcf9a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem;
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(212, 162, 76, 0.07), transparent 60%);
+}
+
+h1, h2, .brand {
+  font-family: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-weight: 500;
+}
+
+main { width: 100%; max-width: 420px; text-align: center; }
+main.wide { max-width: 520px; }
+
+.brand {
+  font-size: clamp(4.5rem, 18vw, 7.5rem);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: var(--text);
+  text-decoration: none;
+  display: inline-block;
+}
+.brand.small { font-size: 2.2rem; margin-bottom: 1.5rem; }
+
+.rule { width: 40px; height: 1px; background: var(--gold); margin: 1.75rem auto; border: 0; }
+
+.subtitle { color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; font-size: 0.8rem; }
+.philosophy { color: var(--muted); font-size: 1rem; max-width: 30ch; margin: 0 auto 2.5rem; }
+
+h2 { font-size: 1.6rem; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+.lead { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+
+.actions { display: flex; flex-direction: column; gap: 0.9rem; align-items: center; }
+@media (min-width: 480px) { .actions { flex-direction: row; justify-content: center; } }
+
+.btn {
+  display: inline-block;
+  padding: 0.85rem 1.8rem;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  background: transparent;
+  font: inherit;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn:hover:not(:disabled) { background: var(--gold); color: var(--bg); }
+.btn.primary { background: var(--gold); color: var(--bg); }
+.btn.primary:hover:not(:disabled) { background: transparent; color: var(--gold); }
+.btn:disabled { opacity: 0.5; cursor: wait; }
+.btn.block { width: 100%; }
+
+form { text-align: left; display: grid; gap: 1.1rem; }
+label { display: grid; gap: 0.35rem; font-size: 0.8rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
+input {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 0.8rem 0.9rem;
+  font: inherit;
+  font-size: 1rem;
+  letter-spacing: normal;
+  text-transform: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus { border-color: var(--gold); }
+
+.msg { min-height: 1.4rem; font-size: 0.9rem; text-align: center; }
+.msg.error { color: var(--error); }
+.msg.ok { color: var(--ok); }
+
+.alt { margin-top: 1.5rem; font-size: 0.9rem; color: var(--muted); }
+.alt a { color: var(--gold); }
+
+.success {
+  border: 1px solid var(--gold);
+  background: var(--gold-soft);
+  padding: 2.5rem 1.5rem;
+}
+.success h2 { color: var(--gold); font-size: 1.5rem; }
+.success .num { font-size: 1.1rem; margin-top: 0.5rem; }
+
+.hidden { display: none !important; }
+
+/* dashboard */
+.card { border: 1px solid var(--line); background: var(--surface); padding: 2rem 1.5rem; margin-bottom: 1.5rem; }
+.rank { font-family: "Shippori Mincho", serif; font-size: 1.5rem; margin-bottom: 1.25rem; }
+.rank strong { color: var(--gold); font-size: 2.4rem; font-weight: 500; }
+.bar { height: 6px; background: var(--line); overflow: hidden; }
+.bar > span { display: block; height: 100%; width: 0; background: var(--gold); transition: width 0.9s ease; }
+.bar-label { margin-top: 0.6rem; font-size: 0.8rem; color: var(--muted); letter-spacing: 0.1em; }
+
+.qr {
+  width: 160px; height: 160px; margin: 0 auto 0.8rem;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px dashed var(--gold); color: var(--gold);
+  font-family: ui-monospace, Consolas, monospace; letter-spacing: 0.1em;
+  background:
+    linear-gradient(45deg, var(--gold-soft) 25%, transparent 25%, transparent 75%, var(--gold-soft) 75%) 0 0 / 20px 20px;
+}
+.qr-note { font-size: 0.8rem; color: var(--muted); }
+.link-btn { background: none; border: 0; color: var(--muted); font: inherit; font-size: 0.85rem; text-decoration: underline; cursor: pointer; }
+.link-btn:hover { color: var(--gold); }

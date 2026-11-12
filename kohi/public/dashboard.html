@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi panel — Kōhi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main>
+    <a class="brand small" href="/">Kōhi</a>
+    <p id="msg" class="msg" role="alert">Cargando…</p>
+
+    <section id="panel" class="hidden">
+      <h2 id="greeting"></h2>
+      <p class="lead">Gracias por esperar con nosotros.</p>
+
+      <div class="card">
+        <p class="rank" id="rank"></p>
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar"><span id="fill"></span></div>
+        <p class="bar-label" id="bar-label"></p>
+      </div>
+
+      <div class="card">
+        <div class="qr" id="qr"></div>
+        <p class="qr-note">Presenta este código el día de la apertura.</p>
+      </div>
+
+      <button class="link-btn" id="logout">Cerrar sesión</button>
+    </section>
+  </main>
+
+  <script>
+    const msg = document.getElementById('msg');
+    const logout = () => { localStorage.removeItem('kohi_token'); location.replace('/login.html'); };
+    document.getElementById('logout').addEventListener('click', logout);
+
+    (async () => {
+      const token = localStorage.getItem('kohi_token');
+      if (!token) return location.replace('/login.html');
+
+      try {
+        const res = await fetch('/api/me', { headers: { Authorization: 'Bearer ' + token } });
+        if (res.status === 401) return logout();
+        if (!res.ok) throw new Error();
+        const { id, name, position, total } = await res.json();
+
+        document.getElementById('greeting').textContent = 'Hola, ' + name;
+        const rank = document.getElementById('rank');
+        rank.append('Eres el ');
+        const strong = document.createElement('strong');
+        strong.textContent = '#' + position;
+        rank.append(strong, ' de ' + total);
+
+        // #1 = 100 %, último = 1/total
+        const pct = Math.round(((total - position + 1) / total) * 100);
+        document.getElementById('bar').setAttribute('aria-valuenow', pct);
+        document.getElementById('bar-label').textContent = pct + '% del camino a la barra';
+        document.getElementById('qr').textContent = 'QR-' + id;
+
+        msg.classList.add('hidden');
+        document.getElementById('panel').classList.remove('hidden');
+        requestAnimationFrame(() => { document.getElementById('fill').style.width = pct + '%'; });
+      } catch {
+        msg.textContent = 'No se pudo cargar tu información. Intenta de nuevo.';
+        msg.className = 'msg error';
+      }
+    })();
+  </script>
+</body>
+</html>
